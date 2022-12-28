@@ -1,47 +1,38 @@
 import React from "react";
-import { useRef, useState, useEffect } from "react";
-import { auth } from "../firebase";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function SignUp({ currentUser, setCurrentUser }) {
+export default function SignUp() {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
+  const { signup } = useAuth();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-        console.log("User signed in");
-      } else {
-        setCurrentUser(null);
-        console.log("User not signed in");
-      }
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  function signup(e) {
+  async function signupUser(e) {
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
-    if (password === confirmPassword) {
-      createUserWithEmailAndPassword(auth, email, password);
-      setError("");
-    } else {
+    if (password !== confirmPassword) {
       setError("Passwords do not match");
       emailRef.current.value = "";
       passwordRef.current.value = "";
       confirmPasswordRef.current.value = "";
     }
+    try {
+      setError("");
+      setLoading(true);
+      await signup(email, password);
+      navigate("/");
+    } catch (error) {
+      setError("Failed to create an account");
+      console.log(error.code);
+    }
+    setLoading(false);
   }
 
   return (
@@ -70,7 +61,7 @@ export default function SignUp({ currentUser, setCurrentUser }) {
             ref={confirmPasswordRef}
           />
         </div>
-        <button onClick={(e) => signup(e)}>Sign In</button>
+        <button onClick={(e) => signupUser(e)}>Sign In</button>
       </form>
       <div className="signupLoginInsteadInfo">
         Already have an account? <Link to="/login">Log In</Link> instead
