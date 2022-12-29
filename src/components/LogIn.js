@@ -44,13 +44,21 @@ export default function LogIn() {
             ref={passwordRef}
           />
         </div>
-        <div className="inputContainer"></div>
-        <button disabled={loading} onClick={(e) => loginUser(e)}>
+        <button
+          className="loginButton"
+          disabled={loading}
+          onClick={(e) => loginUser(e)}
+        >
           Log In
         </button>
       </form>
       <div className="signupLoginInsteadInfo">
-        Don't have an account yet? <Link to="/signup">Sign Up</Link> instead
+        Don't have an account yet?
+        <br />
+        <Link className="links" to="/signup">
+          Sign Up
+        </Link>{" "}
+        instead
       </div>
     </div>
   );

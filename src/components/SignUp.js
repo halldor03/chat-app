@@ -61,10 +61,17 @@ export default function SignUp() {
             ref={confirmPasswordRef}
           />
         </div>
-        <button onClick={(e) => signupUser(e)}>Sign In</button>
+        <button className="signupButton" onClick={(e) => signupUser(e)}>
+          Sign In
+        </button>
       </form>
       <div className="signupLoginInsteadInfo">
-        Already have an account? <Link to="/login">Log In</Link> instead
+        Already have an account?
+        <br />
+        <Link className="links" to="/login">
+          Log In
+        </Link>{" "}
+        instead
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
 /* to show boxes */
-/* * {
+* {
   border: 1px black solid;
-} */
+}
 
 /* simple reset */
 * {
@@ -12,8 +12,15 @@
   box-sizing: border-box;
   font-family: "Open Sans", sans-serif;
   font-size: 16px;
+  color: white;
   text-decoration: none;
-  color: black;
+}
+
+:root {
+  --primaryColor: #18191a;
+  --secondaryColor: #3c3e3f;
+  --buttonColor: #1992d4;
+  --buttonColorHover: #1992d4bf;
 }
 
 body {
@@ -21,27 +28,166 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: black;
 }
 
 .signupContainer {
-  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 35vw;
   padding: 2rem 1rem 2rem 1rem;
   border-radius: 1rem;
-  border: 1px black solid;
+  background-color: var(--primaryColor);
 }
 
 .signupForm {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .inputContainer {
   display: flex;
   align-items: center;
+  padding-bottom: 1rem;
+}
+
+.inputContainer > input {
+  display: flex;
+  flex-grow: 1;
+  appearance: none;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background-color: inherit;
+  border-bottom: 1px var(--secondaryColor) solid;
 }
 
 label {
   display: inline-block;
   width: 150px;
   text-align: left;
+}
+
+.loginButton,
+.signupButton {
+  height: 1.5rem;
+  width: 5rem;
+  background-color: var(--buttonColor);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.loginButton:hover,
+.signupButton:hover {
+  background-color: var(--buttonColorHover);
+}
+
+.signupLoginInsteadInfo {
+  padding-top: 0.5rem;
+  text-align: center;
+}
+
+.links {
+  color: var(--buttonColor);
+}
+
+.links:hover {
+  color: var(--buttonColorHover);
+}
+
+/* MESSAGE BOARD */
+.chatContainer {
+  display: grid;
+  grid-template-rows: 1fr 15fr 1fr;
+  height: 95vh;
+  width: 35vw;
+  min-width: 400px;
+  border-radius: 1rem;
+  background-color: var(--primaryColor);
+  padding: 1rem;
+}
+
+.chatHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+}
+
+.userInfoChat {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.welcomeMessage {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.profilePhoto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  background-color: var(--secondaryColor);
+  font-size: 1.5rem;
+}
+
+.chatMain {
+  border-bottom: 1px var(--secondaryColor) solid;
+  border-top: 1px var(--secondaryColor) solid;
+  margin: 0.5rem 0 0.5rem 0;
+}
+
+.chatFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+}
+
+#messageInput {
+  display: flex;
+  flex-grow: 1;
+  appearance: none;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  margin-right: 0.5rem;
+  background-color: inherit;
+}
+
+.sendMessageButton,
+.logOutButton {
+  height: 100%;
+  width: 5rem;
+  background-color: var(--buttonColor);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.sendMessageButton:hover,
+.logOutButton:hover {
+  /* outline: solid white 1px; */
+  background-color: var(--buttonColorHover);
+}
+/*  */
+
+@media (max-width: 600px) {
+  .chatContainer {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
 }
