@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
 /* to show boxes */
-* {
+/* * {
   border: 1px black solid;
-}
+} */
 
 /* simple reset */
 * {
@@ -31,13 +31,15 @@ body {
   background-color: black;
 }
 
+/* LOGIN&SIGNUP PAGE */
 .signupContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 35vw;
-  padding: 2rem 1rem 2rem 1rem;
+  width: 25vw;
+  min-width: 350px;
+  padding: 2rem;
   border-radius: 1rem;
   background-color: var(--primaryColor);
 }
@@ -50,13 +52,12 @@ body {
 
 .inputContainer {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   padding-bottom: 1rem;
 }
 
 .inputContainer > input {
-  display: flex;
-  flex-grow: 1;
+  width: 100%;
   appearance: none;
   font-family: inherit;
   border: none;
@@ -73,7 +74,7 @@ label {
 
 .loginButton,
 .signupButton {
-  height: 1.5rem;
+  height: 2rem;
   width: 5rem;
   background-color: var(--buttonColor);
   border-radius: 0.5rem;
@@ -105,7 +106,7 @@ label {
   display: grid;
   grid-template-rows: 1fr 15fr 1fr;
   height: 95vh;
-  width: 35vw;
+  width: 30vw;
   min-width: 400px;
   border-radius: 1rem;
   background-color: var(--primaryColor);
@@ -179,15 +180,21 @@ label {
 
 .sendMessageButton:hover,
 .logOutButton:hover {
-  /* outline: solid white 1px; */
   background-color: var(--buttonColorHover);
 }
-/*  */
 
 @media (max-width: 600px) {
+  * {
+    font-size: 14px;
+  }
+
   .chatContainer {
     width: 100vw;
     height: 100vh;
     border-radius: 0;
+  }
+
+  .signupContainer {
+    width: 80vw;
   }
 }
