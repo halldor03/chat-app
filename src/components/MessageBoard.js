@@ -1,13 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { db } from "../firebase";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
+import uniqid from "uniqid";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
 export default function MessageBoard() {
   const [error, setError] = useState("");
+  const [userMessage, setUserMessage] = useState("");
+  const [sentMessages, setSentMessages] = useState([]);
   const { currentUser } = useAuth();
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const messageRef = useRef();
 
   if (!currentUser) {
     return <Navigate to="/login" replace />;
@@ -25,6 +36,36 @@ export default function MessageBoard() {
     }
   }
 
+  async function sendMessage(e) {
+    e.preventDefault();
+    // console.log(e.key);
+    try {
+      await addDoc(collection(db, "sentMessages"), {
+        text: userMessage,
+        author: currentUser.email,
+        createdAt: serverTimestamp(),
+        id: uniqid(),
+      });
+    } catch (error) {
+      console.log(error.code);
+    }
+    setUserMessage("");
+  }
+
+  const messagesQuery = query(collection(db, "sentMessages"));
+  const msgs = [];
+  const unsubscribe = onSnapshot(messagesQuery, (querySnapshot) => {
+    querySnapshot.forEach((message) => {
+      msgs.push(message.data());
+    });
+    // console.log(msgs);
+    // setSentMessages([...sentMessages, ...msgs]);
+  });
+  // console.log(sentMessages);
+
+  // const [test] = useCollectionData(messagesQuery);
+  // console.log(test);
+
   const userName = currentUser.email.split("@")[0];
   const userAvatar = userName[0];
 
@@ -41,16 +82,28 @@ export default function MessageBoard() {
               Log Out
             </button>
           </div>
-          <div className="chatMain"></div>
+          <div className="chatMain">
+            {sentMessages.map((message) => {
+              return <div key={message.id}>{message.text}</div>;
+            })}
+          </div>
           <div className="chatFooter">
-            <input
+            <textarea
               autoFocus
-              type="text"
+              maxLength="100"
+              rows="3"
               id="messageInput"
-              ref={messageRef}
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
               placeholder="Type a message here"
+              // onKeyDown={(e) => sendMessage(e)}
             />
-            <button className="sendMessageButton">Send</button>
+            <button
+              className="sendMessageButton"
+              onClick={(e) => sendMessage(e)}
+            >
+              Send
+            </button>
           </div>
         </div>
       </div>

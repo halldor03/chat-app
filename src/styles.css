@@ -23,6 +23,14 @@
   --buttonColorHover: #1992d4bf;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: white;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -37,8 +45,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 25vw;
-  min-width: 350px;
+  width: clamp(22rem, 25vw, 25rem);
   padding: 2rem;
   border-radius: 1rem;
   background-color: var(--primaryColor);
@@ -106,8 +113,7 @@ label {
   display: grid;
   grid-template-rows: 1fr 15fr 1fr;
   height: 95vh;
-  width: 30vw;
-  min-width: 400px;
+  width: clamp(25rem, 25vw, 40rem);
   border-radius: 1rem;
   background-color: var(--primaryColor);
   padding: 1rem;
@@ -165,6 +171,8 @@ label {
   outline: none;
   margin-right: 0.5rem;
   background-color: inherit;
+  resize: none;
+  overflow-y: hidden;
 }
 
 .sendMessageButton,

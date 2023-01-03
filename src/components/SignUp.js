@@ -22,17 +22,18 @@ export default function SignUp() {
       emailRef.current.value = "";
       passwordRef.current.value = "";
       confirmPasswordRef.current.value = "";
+    } else {
+      try {
+        setError("");
+        setLoading(true);
+        await signup(email, password);
+        navigate("/");
+      } catch (error) {
+        setError("Failed to create an account");
+        console.log(error.code);
+      }
+      setLoading(false);
     }
-    try {
-      setError("");
-      setLoading(true);
-      await signup(email, password);
-      navigate("/");
-    } catch (error) {
-      setError("Failed to create an account");
-      console.log(error.code);
-    }
-    setLoading(false);
   }
 
   return (
