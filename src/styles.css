@@ -19,8 +19,8 @@
 :root {
   --primaryColor: #18191a;
   --secondaryColor: #3c3e3f;
-  --buttonColor: #1992d4;
-  --buttonColorHover: #1992d4bf;
+  --distinctiveColor: #1992d4;
+  --distinctiveColorHover: #1992d4bf;
 }
 
 input:-webkit-autofill,
@@ -83,7 +83,7 @@ label {
 .signupButton {
   height: 2rem;
   width: 5rem;
-  background-color: var(--buttonColor);
+  background-color: var(--distinctiveColor);
   border-radius: 0.5rem;
   cursor: pointer;
   border: none;
@@ -92,7 +92,7 @@ label {
 
 .loginButton:hover,
 .signupButton:hover {
-  background-color: var(--buttonColorHover);
+  background-color: var(--distinctiveColorHover);
 }
 
 .signupLoginInsteadInfo {
@@ -101,11 +101,11 @@ label {
 }
 
 .links {
-  color: var(--buttonColor);
+  color: var(--distinctiveColor);
 }
 
 .links:hover {
-  color: var(--buttonColorHover);
+  color: var(--distinctiveColorHover);
 }
 
 /* MESSAGE BOARD */
@@ -113,7 +113,8 @@ label {
   display: grid;
   grid-template-rows: 1fr 15fr 1fr;
   height: 95vh;
-  width: clamp(25rem, 25vw, 40rem);
+  min-width: 25rem;
+  max-width: 40rem;
   border-radius: 1rem;
   background-color: var(--primaryColor);
   padding: 1rem;
@@ -179,7 +180,7 @@ label {
 .logOutButton {
   height: 100%;
   width: 5rem;
-  background-color: var(--buttonColor);
+  background-color: var(--distinctiveColor);
   border-radius: 0.5rem;
   cursor: pointer;
   border: none;
@@ -188,7 +189,49 @@ label {
 
 .sendMessageButton:hover,
 .logOutButton:hover {
-  background-color: var(--buttonColorHover);
+  background-color: var(--distinctiveColorHover);
+}
+
+.sentMessage {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: right;
+  align-items: flex-end;
+  gap: 0.25rem;
+  word-break: break-word;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.receivedMessage {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  align-items: flex-end;
+  gap: 0.25rem;
+  word-break: break-word;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.messageProfilePhoto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  /* background-color: var(--secondaryColor); */
+}
+
+.messageText {
+  background-color: var(--secondaryColor);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.sentMessage > .messageText {
+  background-color: var(--distinctiveColor);
 }
 
 @media (max-width: 600px) {

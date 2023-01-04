@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import {
@@ -7,7 +7,8 @@ import {
   addDoc,
   serverTimestamp,
   query,
-  onSnapshot,
+  orderBy,
+  limit,
 } from "firebase/firestore";
 import uniqid from "uniqid";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -15,14 +16,16 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 export default function MessageBoard() {
   const [error, setError] = useState("");
   const [userMessage, setUserMessage] = useState("");
-  const [sentMessages, setSentMessages] = useState([]);
   const { currentUser } = useAuth();
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  if (!currentUser) {
-    return <Navigate to="/login" replace />;
-  }
+  const messagesQuery = query(
+    collection(db, "sentMessages"),
+    orderBy("createdAt"),
+    limit(25)
+  );
+  const [sentMessages] = useCollectionData(messagesQuery);
 
   async function logoutUser(e) {
     e.preventDefault();
@@ -44,7 +47,7 @@ export default function MessageBoard() {
         text: userMessage,
         author: currentUser.email,
         createdAt: serverTimestamp(),
-        id: uniqid(),
+        msgID: uniqid(),
       });
     } catch (error) {
       console.log(error.code);
@@ -52,22 +55,15 @@ export default function MessageBoard() {
     setUserMessage("");
   }
 
-  const messagesQuery = query(collection(db, "sentMessages"));
-  const msgs = [];
-  const unsubscribe = onSnapshot(messagesQuery, (querySnapshot) => {
-    querySnapshot.forEach((message) => {
-      msgs.push(message.data());
-    });
-    // console.log(msgs);
-    // setSentMessages([...sentMessages, ...msgs]);
-  });
-  // console.log(sentMessages);
-
-  // const [test] = useCollectionData(messagesQuery);
-  // console.log(test);
-
-  const userName = currentUser.email.split("@")[0];
-  const userAvatar = userName[0];
+  // const stringHexNumber =
+  //   "#" +
+  //   (
+  //     parseInt(parseInt("qaz123@o2.pl", 36).toExponential().slice(2, -5), 10) &
+  //     0xffffff
+  //   )
+  //     .toString(16)
+  //     .toUpperCase();
+  // console.log(stringHexNumber);
 
   return (
     <>
@@ -75,22 +71,49 @@ export default function MessageBoard() {
         <div className="chatContainer">
           <div className="chatHeader">
             <div className="userInfoChat">
-              <div className="welcomeMessage">Welcome back, {userName}</div>
-              <div className="profilePhoto">{userAvatar}</div>
+              <div className="welcomeMessage">
+                Welcome back, {currentUser.email.split("@")[0]}
+              </div>
+              <div className="profilePhoto">
+                {currentUser.email.split("@")[0][0]}
+              </div>
             </div>
             <button className="logOutButton" onClick={(e) => logoutUser(e)}>
               Log Out
             </button>
           </div>
           <div className="chatMain">
-            {sentMessages.map((message) => {
-              return <div key={message.id}>{message.text}</div>;
-            })}
+            {sentMessages &&
+              sentMessages.map((message) => {
+                return (
+                  <div
+                    className={
+                      message.author === currentUser.email
+                        ? "sentMessage"
+                        : "receivedMessage"
+                    }
+                    key={message.msgID}
+                  >
+                    <div
+                      className="messageProfilePhoto"
+                      style={
+                        {
+                          // backgroundColor: stringHexNumber,
+                          // backgroundColor: {},
+                        }
+                      }
+                    >
+                      {message.author.split("@")[0][0]}
+                    </div>
+                    <div className="messageText">{message.text}</div>
+                  </div>
+                );
+              })}
           </div>
           <div className="chatFooter">
             <textarea
               autoFocus
-              maxLength="100"
+              maxLength="200"
               rows="3"
               id="messageInput"
               value={userMessage}
