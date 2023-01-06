@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
@@ -19,6 +19,7 @@ export default function MessageBoard() {
   const { currentUser } = useAuth();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const dummy = useRef();
 
   const messagesQuery = query(
     collection(db, "sentMessages"),
@@ -48,22 +49,14 @@ export default function MessageBoard() {
         author: currentUser.email,
         createdAt: serverTimestamp(),
         msgID: uniqid(),
+        authorID: currentUser.uid,
       });
     } catch (error) {
       console.log(error.code);
     }
     setUserMessage("");
+    dummy.current.scrollIntoView({ behavior: "smooth" });
   }
-
-  // const stringHexNumber =
-  //   "#" +
-  //   (
-  //     parseInt(parseInt("qaz123@o2.pl", 36).toExponential().slice(2, -5), 10) &
-  //     0xffffff
-  //   )
-  //     .toString(16)
-  //     .toUpperCase();
-  // console.log(stringHexNumber);
 
   return (
     <>
@@ -96,24 +89,38 @@ export default function MessageBoard() {
                   >
                     <div
                       className="messageProfilePhoto"
-                      style={
-                        {
-                          // backgroundColor: stringHexNumber,
-                          // backgroundColor: {},
-                        }
-                      }
+                      style={{
+                        backgroundColor:
+                          "#" +
+                          (
+                            parseInt(
+                              parseInt(message.authorID, 36)
+                                .toExponential()
+                                .slice(2, -5),
+                              10
+                            ) & 0xffffff
+                          )
+                            .toString(16)
+                            .toUpperCase(),
+                      }}
                     >
                       {message.author.split("@")[0][0]}
                     </div>
-                    <div className="messageText">{message.text}</div>
+                    <div className="messageWrapper">
+                      {message.author !== currentUser.email ? (
+                        <div className="messageAuthor">{message.author}</div>
+                      ) : null}
+                      <div className="messageText">{message.text}</div>
+                    </div>
                   </div>
                 );
               })}
+            <div ref={dummy}></div>
           </div>
           <div className="chatFooter">
             <textarea
               autoFocus
-              maxLength="200"
+              maxLength="320"
               rows="3"
               id="messageInput"
               value={userMessage}

@@ -113,18 +113,29 @@ label {
   display: grid;
   grid-template-rows: 1fr 15fr 1fr;
   height: 95vh;
-  min-width: 25rem;
-  max-width: 40rem;
+  width: clamp(25rem, 25vw, 40rem);
   border-radius: 1rem;
   background-color: var(--primaryColor);
-  padding: 1rem;
+  padding: 0 1.5rem 0 1.5rem;
+  overflow-y: overlay;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.chatContainer::-webkit-scrollbar {
+  display: none;
 }
 
 .chatHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 48px;
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px var(--secondaryColor) solid;
+  background-color: var(--primaryColor);
+  position: sticky;
+  top: 0;
 }
 
 .userInfoChat {
@@ -150,17 +161,16 @@ label {
   font-size: 1.5rem;
 }
 
-.chatMain {
-  border-bottom: 1px var(--secondaryColor) solid;
-  border-top: 1px var(--secondaryColor) solid;
-  margin: 0.5rem 0 0.5rem 0;
-}
-
 .chatFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 48px;
+  padding-bottom: 1.5rem;
+  background-color: var(--primaryColor);
+  border-top: 1px var(--secondaryColor) solid;
+  padding-top: 0.5rem;
+  position: sticky;
+  bottom: 0;
 }
 
 #messageInput {
@@ -173,7 +183,14 @@ label {
   margin-right: 0.5rem;
   background-color: inherit;
   resize: none;
-  overflow-y: hidden;
+  overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  height: 50px;
+}
+
+#messageInput::-webkit-scrollbar {
+  display: none;
 }
 
 .sendMessageButton,
@@ -221,7 +238,12 @@ label {
   min-height: 24px;
   border-radius: 50%;
   aspect-ratio: 1/1;
-  /* background-color: var(--secondaryColor); */
+}
+
+.messageAuthor {
+  font-size: 11px;
+  color: var(--secondaryColor);
+  padding-bottom: 0.1rem;
 }
 
 .messageText {
@@ -230,7 +252,7 @@ label {
   border-radius: 0.5rem;
 }
 
-.sentMessage > .messageText {
+.sentMessage .messageText {
   background-color: var(--distinctiveColor);
 }
 
@@ -249,3 +271,12 @@ label {
     width: 80vw;
   }
 }
+
+/* 
+TO DO:
+- error messages on login/signup
+- see-through footer?
+- send on enter?
+- dark/white theme
+- visible or invisible scrollbar?
+*/
