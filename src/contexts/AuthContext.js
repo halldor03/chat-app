@@ -26,11 +26,11 @@ export default function AuthProvider({ children }) {
       if (user) {
         setCurrentUser(user);
         setLoading(false);
-        console.log("User signed in");
+        // console.log("User signed in");
       } else {
         setCurrentUser(null);
         setLoading(false);
-        console.log("User not signed in");
+        // console.log("User not signed in");
       }
     });
     return () => {

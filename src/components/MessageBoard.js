@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
@@ -20,11 +20,24 @@ export default function MessageBoard() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const dummy = useRef();
+  // const chatMainRef = useRef();
+
+  // function Scrolldown() {
+  //   chatMainRef.scroll({
+  //     top: 100,
+  //     behavior: "smooth",
+  //   });
+  // }
+  // window.onload = Scrolldown;
+
+  useEffect(() => {
+    dummy.current.scrollIntoView({ behavior: "smooth" });
+  });
 
   const messagesQuery = query(
     collection(db, "sentMessages"),
     orderBy("createdAt"),
-    limit(25)
+    limit(50)
   );
   const [sentMessages] = useCollectionData(messagesQuery);
 
@@ -42,7 +55,6 @@ export default function MessageBoard() {
 
   async function sendMessage(e) {
     e.preventDefault();
-    // console.log(e.key);
     try {
       await addDoc(collection(db, "sentMessages"), {
         text: userMessage,
@@ -75,7 +87,10 @@ export default function MessageBoard() {
               Log Out
             </button>
           </div>
-          <div className="chatMain">
+          <div
+            className="chatMain"
+            //  ref={chatMainRef}
+          >
             {sentMessages &&
               sentMessages.map((message) => {
                 return (
@@ -107,26 +122,54 @@ export default function MessageBoard() {
                       {message.author.split("@")[0][0]}
                     </div>
                     <div className="messageWrapper">
-                      {message.author !== currentUser.email ? (
-                        <div className="messageAuthor">{message.author}</div>
-                      ) : null}
+                      <div className="messageInfoWrapper">
+                        {message.author !== currentUser.email ? (
+                          <div className="messageAuthor">{message.author}</div>
+                        ) : null}
+                        <div className="messageTime">
+                          sent at {""}
+                          {message.createdAt &&
+                            new Date(
+                              message.createdAt.seconds * 1000
+                            ).getHours()}
+                          :
+                          {message.createdAt &&
+                            new Date(
+                              message.createdAt.seconds * 1000
+                            ).getMinutes()}{" "}
+                          on{" "}
+                          {message.createdAt &&
+                            new Date(
+                              message.createdAt.seconds * 1000
+                            ).getDate()}
+                          .
+                          {message.createdAt &&
+                            new Date(
+                              message.createdAt.seconds * 1000
+                            ).getMonth() + 1}
+                        </div>
+                      </div>
                       <div className="messageText">{message.text}</div>
                     </div>
                   </div>
                 );
               })}
-            <div ref={dummy}></div>
+            <p ref={dummy}></p>
           </div>
           <div className="chatFooter">
             <textarea
               autoFocus
               maxLength="320"
-              rows="3"
+              rows="2"
               id="messageInput"
               value={userMessage}
               onChange={(e) => setUserMessage(e.target.value)}
               placeholder="Type a message here"
-              // onKeyDown={(e) => sendMessage(e)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  sendMessage(e);
+                }
+              }}
             />
             <button
               className="sendMessageButton"

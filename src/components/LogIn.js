@@ -21,8 +21,21 @@ export default function LogIn() {
       await login(email, password);
       navigate("/");
     } catch (error) {
-      setError("Failed to login");
-      console.log(error.code);
+      emailRef.current.value = "";
+      passwordRef.current.value = "";
+      switch (error.code) {
+        case "auth/invalid-email":
+          setError("Invalid e-mail: please provide valid e-mail adress");
+          break;
+        case "auth/user-not-found":
+          setError("User not found: please Sign Up instead");
+          break;
+        case "auth/wrong-password":
+          setError("Wrong password: please provide valid password");
+          break;
+        default:
+          setError("An error occured while trying to log in");
+      }
     }
     setLoading(false);
   }

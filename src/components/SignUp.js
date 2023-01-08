@@ -29,7 +29,20 @@ export default function SignUp() {
         await signup(email, password);
         navigate("/");
       } catch (error) {
-        setError("Failed to create an account");
+        emailRef.current.value = "";
+        passwordRef.current.value = "";
+        switch (error.code) {
+          case "auth/invalid-email":
+            setError("Invalid e-mail: please provide valid e-mail adress");
+            break;
+          case "auth/weak-password":
+            setError(
+              "Password too weak: password should have at least 6 characters"
+            );
+            break;
+          default:
+            setError("An error occured while trying to log in");
+        }
         console.log(error.code);
       }
       setLoading(false);

@@ -117,13 +117,6 @@ label {
   border-radius: 1rem;
   background-color: var(--primaryColor);
   padding: 0 1.5rem 0 1.5rem;
-  overflow-y: overlay;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.chatContainer::-webkit-scrollbar {
-  display: none;
 }
 
 .chatHeader {
@@ -161,6 +154,23 @@ label {
   font-size: 1.5rem;
 }
 
+.chatMain {
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.chatMain::-webkit-scrollbar {
+  width: 0.25rem;
+  border-radius: 0.1rem;
+}
+
+.chatMain::-webkit-scrollbar-thumb {
+  background: var(--secondaryColor);
+  border-radius: 10px;
+}
+
 .chatFooter {
   display: flex;
   justify-content: space-between;
@@ -170,7 +180,7 @@ label {
   border-top: 1px var(--secondaryColor) solid;
   padding-top: 0.5rem;
   position: sticky;
-  bottom: 0;
+  bottom: -1px;
 }
 
 #messageInput {
@@ -186,7 +196,7 @@ label {
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  height: 50px;
+  height: 48px;
 }
 
 #messageInput::-webkit-scrollbar {
@@ -220,6 +230,14 @@ label {
   margin-bottom: 0.5rem;
 }
 
+.chatMain > .sentMessage:first-child {
+  margin-top: 0rem;
+}
+
+.chatMain > .sentMessage:last-of-type {
+  margin-bottom: 0rem;
+}
+
 .receivedMessage {
   display: flex;
   justify-content: left;
@@ -229,6 +247,14 @@ label {
   word-break: break-word;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.chatMain > .receivedMessage:first-child {
+  margin-top: 0rem;
+}
+
+.chatMain > .receivedMessage:last-of-type {
+  margin-bottom: 0rem;
 }
 
 .messageProfilePhoto {
@@ -250,10 +276,42 @@ label {
   background-color: var(--secondaryColor);
   padding: 0.5rem;
   border-radius: 0.5rem;
+  white-space: pre-line;
+  width: fit-content;
 }
 
 .sentMessage .messageText {
   background-color: var(--distinctiveColor);
+}
+
+.errorMessage {
+  text-align: center;
+  color: rgba(255, 0, 0, 0.75);
+  padding-bottom: 0.5rem;
+}
+
+.messageTime {
+  font-size: 11px;
+  color: var(--secondaryColor);
+  padding-bottom: 0.1rem;
+}
+
+.sentMessage > .messageWrapper {
+  display: grid;
+}
+
+.sentMessage > .messageWrapper > .messageText {
+  justify-self: end;
+}
+
+.sentMessage .messageInfoWrapper {
+  display: flex;
+  justify-content: right;
+}
+
+.receivedMessage .messageInfoWrapper {
+  display: flex;
+  justify-content: left;
 }
 
 @media (max-width: 600px) {
@@ -274,9 +332,6 @@ label {
 
 /* 
 TO DO:
-- error messages on login/signup
-- see-through footer?
-- send on enter?
-- dark/white theme
-- visible or invisible scrollbar?
+- !dark/white theme
+- ?hide scrollbar when stopped scrolling + styling
 */
