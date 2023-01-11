@@ -31,11 +31,19 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: white;
 }
 
+html {
+  overflow: auto;
+}
+
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: black;
+}
+
+.bodyColored {
   background-color: black;
 }
 
@@ -219,6 +227,15 @@ label {
   background-color: var(--distinctiveColorHover);
 }
 
+.sendMessageButtonDisabled {
+  height: 100%;
+  width: 5rem;
+  background-color: var(--distinctiveColorHover);
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+}
+
 .sentMessage {
   display: flex;
   flex-direction: row-reverse;
@@ -316,7 +333,17 @@ label {
 
 @media (max-width: 600px) {
   * {
-    font-size: 14px;
+    font-size: 16px;
+  }
+
+  body,
+  html,
+  #root {
+    overflow: hidden;
+  }
+
+  .bodyColored {
+    background-color: var(--primaryColor);
   }
 
   .chatContainer {
@@ -330,8 +357,7 @@ label {
   }
 }
 
-/* 
-TO DO:
-- !dark/white theme
-- ?hide scrollbar when stopped scrolling + styling
+/* to do:
+- figure out scrolling
+- roughly style mobile app
 */

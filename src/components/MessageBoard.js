@@ -8,7 +8,6 @@ import {
   serverTimestamp,
   query,
   orderBy,
-  limit,
 } from "firebase/firestore";
 import uniqid from "uniqid";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -16,28 +15,31 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 export default function MessageBoard() {
   const [error, setError] = useState("");
   const [userMessage, setUserMessage] = useState("");
+  const [disableSendButton, setDisableSendButton] = useState(true);
   const { currentUser } = useAuth();
   const { logout } = useAuth();
   const navigate = useNavigate();
   const dummy = useRef();
-  // const chatMainRef = useRef();
-
-  // function Scrolldown() {
-  //   chatMainRef.scroll({
-  //     top: 100,
-  //     behavior: "smooth",
-  //   });
-  // }
-  // window.onload = Scrolldown;
+  const textarea = useRef();
 
   useEffect(() => {
-    dummy.current.scrollIntoView({ behavior: "smooth" });
+    if (userMessage.replace(/\s/g, "").length !== 0) {
+      setDisableSendButton(false);
+    } else setDisableSendButton(true);
+    document.body.classList.add("bodyColored");
   });
+
+  useEffect(() => {
+    if (userMessage === "") {
+      setTimeout(function () {
+        dummy.current.scrollIntoView({ behavior: "smooth" });
+      }, 1);
+    }
+  }, []);
 
   const messagesQuery = query(
     collection(db, "sentMessages"),
-    orderBy("createdAt"),
-    limit(50)
+    orderBy("createdAt")
   );
   const [sentMessages] = useCollectionData(messagesQuery);
 
@@ -67,6 +69,7 @@ export default function MessageBoard() {
       console.log(error.code);
     }
     setUserMessage("");
+    textarea.current.focus();
     dummy.current.scrollIntoView({ behavior: "smooth" });
   }
 
@@ -87,10 +90,7 @@ export default function MessageBoard() {
               Log Out
             </button>
           </div>
-          <div
-            className="chatMain"
-            //  ref={chatMainRef}
-          >
+          <div className="chatMain">
             {sentMessages &&
               sentMessages.map((message) => {
                 return (
@@ -158,6 +158,7 @@ export default function MessageBoard() {
           </div>
           <div className="chatFooter">
             <textarea
+              ref={textarea}
               autoFocus
               maxLength="320"
               rows="2"
@@ -172,7 +173,12 @@ export default function MessageBoard() {
               }}
             />
             <button
-              className="sendMessageButton"
+              className={
+                disableSendButton
+                  ? "sendMessageButtonDisabled"
+                  : "sendMessageButton"
+              }
+              disabled={disableSendButton ? true : false}
               onClick={(e) => sendMessage(e)}
             >
               Send
