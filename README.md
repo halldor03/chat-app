@@ -1,3 +1,5 @@
+Talk with all your friends here: https://chat-app-e1c53.firebaseapp.com/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

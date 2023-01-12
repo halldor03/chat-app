@@ -15,6 +15,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 export default function MessageBoard() {
   const [error, setError] = useState("");
   const [userMessage, setUserMessage] = useState("");
+  const [prevUserMsg, setprevUserMsg] = useState("");
   const [disableSendButton, setDisableSendButton] = useState(true);
   const { currentUser } = useAuth();
   const { logout } = useAuth();
@@ -26,16 +27,12 @@ export default function MessageBoard() {
     if (userMessage.replace(/\s/g, "").length !== 0) {
       setDisableSendButton(false);
     } else setDisableSendButton(true);
-    document.body.classList.add("bodyColored");
-  });
-
-  useEffect(() => {
-    if (userMessage === "") {
-      setTimeout(function () {
-        dummy.current.scrollIntoView({ behavior: "smooth" });
-      }, 1);
+    if (userMessage === "" && prevUserMsg.length !== 1) {
+      dummy.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, []);
+    document.body.classList.add("bodyColored");
+    return () => document.body.classList.remove("bodyColored");
+  });
 
   const messagesQuery = query(
     collection(db, "sentMessages"),
@@ -56,21 +53,23 @@ export default function MessageBoard() {
   }
 
   async function sendMessage(e) {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, "sentMessages"), {
-        text: userMessage,
-        author: currentUser.email,
-        createdAt: serverTimestamp(),
-        msgID: uniqid(),
-        authorID: currentUser.uid,
-      });
-    } catch (error) {
-      console.log(error.code);
+    if (userMessage.replace(/\s/g, "").length !== 0) {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "sentMessages"), {
+          text: userMessage,
+          author: currentUser.email,
+          createdAt: serverTimestamp(),
+          msgID: uniqid(),
+          authorID: currentUser.uid,
+        });
+      } catch (error) {
+        console.log(error.code);
+      }
+      setUserMessage("");
+      textarea.current.focus();
+      dummy.current.scrollIntoView({ behavior: "smooth" });
     }
-    setUserMessage("");
-    textarea.current.focus();
-    dummy.current.scrollIntoView({ behavior: "smooth" });
   }
 
   return (
@@ -82,7 +81,23 @@ export default function MessageBoard() {
               <div className="welcomeMessage">
                 Welcome back, {currentUser.email.split("@")[0]}
               </div>
-              <div className="profilePhoto">
+              <div
+                style={{
+                  backgroundColor:
+                    "#" +
+                    (
+                      parseInt(
+                        parseInt(currentUser.uid, 36)
+                          .toExponential()
+                          .slice(2, -5),
+                        10
+                      ) & 0xffffff
+                    )
+                      .toString(16)
+                      .toUpperCase(),
+                }}
+                className="profilePhoto"
+              >
                 {currentUser.email.split("@")[0][0]}
               </div>
             </div>
@@ -164,7 +179,10 @@ export default function MessageBoard() {
               rows="2"
               id="messageInput"
               value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
+              onChange={(e) => {
+                setUserMessage(e.target.value);
+                setprevUserMsg(userMessage);
+              }}
               placeholder="Type a message here"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
